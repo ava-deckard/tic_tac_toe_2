@@ -1,86 +1,26 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridGap: '1px',
-    backgroundColor: 'black',
-  },
-  cell: {
-    backgroundColor: 'white',
-    width: '100px',
-    height: '100px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '2rem',
-    fontWeight: 'bold',
-  },
-}));
+import React from 'react';
+import { Grid } from '@mui/material';
+import theme from '../lib/theme';
 
 const GameBoard: React.FC = () => {
-  const classes = useStyles();
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState('X');
-
+  const [board, setBoard] = React.useState(Array(9).fill(null));
   const handleClick = (index: number) => {
-    if (board[index] === null) {
-      const newBoard = [...board];
-      newBoard[index] = currentPlayer;
-      setBoard(newBoard);
-      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
-    }
+    const newBoard = [...board];
+    newBoard[index] = 'X';
+    setBoard(newBoard);
   };
 
   return (
-    <Box className={classes.container}>
-      {board.map((cell, index) => (
-        <Button
-          key={index}
-          className={classes.cell}
-          onClick={() => handleClick(index)}
-        >
-          {cell}
-        </Button>
+    <Grid container spacing={1}>
+      {board.map((value, index) => (
+        <Grid item xs={4} key={index} onClick={() => handleClick(index)}>
+          <div style={{ border: `1px solid ${theme.palette.primary.main}`, width: '100%', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {value}
+          </div>
+        </Grid>
       ))}
-    </Box>
+    </Grid>
   );
-};
-
-export default GameBoard;
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import storeGameResults from '../utils/storeGameResults';
-
-const useStyles = makeStyles(() => ({
-  /* Existing styles */
-}));
-
-const GameBoard: React.FC = () => {
-  /* Existing state variables and functions */
-
-  const checkWinner = (board: (string | null)[]): string | null => {
-    /* Check for winner logic */
-  };
-
-  useEffect(() => {
-    const winner = checkWinner(board);
-    if (winner) {
-      storeGameResults({
-        winner,
-        board,
-        timestamp: Date.now(),
-      });
-    }
-  }, [board]);
-
-  /* Existing return statement */
 };
 
 export default GameBoard;
