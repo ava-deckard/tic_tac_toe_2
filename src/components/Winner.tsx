@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
-import { useFirestore } from 'src/lib/firebase';
+import React from 'react';
+import { Typography } from '@mui/material';
+import { checkWinner } from '../lib/firebase';
 
-const Winner: React.FC = () => {
-  const { db } = useFirestore();
-  const [winner, setWinner] = useState<string | null>(null);
+interface Props {
+  board: string[];
+}
 
-  useEffect(() => {
-    const fetchWinner = async () => {
-      const winnerRef = db.collection('winners').orderBy('timestamp', 'desc').limit(1);
-      const winnerSnapshot = await winnerRef.get();
-      winnerSnapshot.forEach(doc => setWinner(doc.data().name));
-    };
+const Winner: React.FC<Props> = ({ board }) => {
+  const winner = checkWinner(board);
 
-    fetchWinner();
-  }, [db]);
+  if (winner === null) {
+    return <Typography variant='h6'>It's a draw!</Typography>;
+  }
 
-  return (
-    <Box>
-      <Typography variant="h4">Winner:</Typography>
-      {winner ? <Typography variant="h5">{winner}</Typography> : <Typography variant="h5">No winner yet</Typography>}
-    </Box>
-  );
+  return <Typography variant='h5'>{winner} won the game!</Typography>;
 };
 
 export default Winner;
